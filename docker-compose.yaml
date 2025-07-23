@@ -1,0 +1,8 @@
+services:
+  birthday-bot:
+    image: ghcr.io/aikenahac/birthday-bot-discord:master
+    env_file:
+      - .env
+    volumes:
+      - ./user_birthdays.db:/usr/src/app/user_birthdays.db
+    restart: unless-stopped
