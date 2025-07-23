@@ -5,8 +5,6 @@
   "private": true,
   "scripts": {
     "start": "bun run src/index.ts",
-    "dev": "bun run src/index.ts --watch",
-    "build": "bun build src/index.ts --outdir=dist --target=node",
     "deploy-commands": "bun run src/manual-command-deploy.ts"
   },
   "devDependencies": {
