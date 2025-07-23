@@ -8,7 +8,7 @@
 1. Copy `.env.example` to `.env`
 2. Input your token values
 3. Run `bun install`
-4. Run `bun dev`
+4. Run `bun start`
 
 ## Database
 
