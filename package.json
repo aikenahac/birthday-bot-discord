@@ -1,0 +1,22 @@
+{
+  "name": "birthday-bot-discord",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun run src/index.ts --watch",
+    "build": "bun build src/index.ts --outdir=dist --target=node",
+    "deploy-commands": "bun run src/manual-command-deploy.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "inquirer": "^12.8.2"
+  }
+}
