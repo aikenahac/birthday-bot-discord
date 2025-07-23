@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { createUserBirthday } from "../database/create-user-birthday";
 
 export const data = new SlashCommandBuilder()
-  .setName("create-birthday")
+  .setName("set-birthday")
   .setDescription("Set a birthday for a user")
   .addUserOption(option =>
     option
@@ -27,6 +27,13 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       flags: [
         "Ephemeral"
       ]
+    });
+  }
+
+  if (!interaction.guild) {
+    return interaction.reply({
+      content: "❌ This command can only be used in a server!",
+      flags: ["Ephemeral"]
     });
   }
 
@@ -70,9 +77,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const birthday = `${yearNum.toString().padStart(4, '0')}-${monthNum.toString().padStart(2, '0')}-${dayNum.toString().padStart(2, '0')}`;
 
   try {
-    createUserBirthday(user.id, birthday);
+    createUserBirthday(user.id, interaction.guild.id, birthday);
     
-    console.log(`Birthday set for user ${user.username}: ${birthday} [${interaction.member?.user.username}]`);
+    console.log(`Birthday set for user ${user.username} in server ${interaction.guild.name}: ${birthday} [${interaction.member?.user.username}]`);
 
     return interaction.reply({
       content: `✅ Birthday set for ${user.toString()}: ${dateInput}`

@@ -22,8 +22,15 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction: ChatInputCommandInteraction) {
   const days = interaction.options.getInteger('days-from-today') ?? 31;
 
+  if (!interaction.guild) {
+    return interaction.reply({
+      content: "❌ This command can only be used in a server!",
+      flags: ["Ephemeral"]
+    });
+  }
+
   try {
-    const birthdays = getUserBirthdays(days);
+    const birthdays = getUserBirthdays(days, interaction.guild.id);
 
     if (birthdays.length === 0) {
       return interaction.reply({
