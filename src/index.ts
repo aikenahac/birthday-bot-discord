@@ -1,4 +1,5 @@
 import { Client } from "discord.js";
+import cron from "node-cron";
 import { config } from "./config";
 import { commands } from "./commands";
 import { deployCommands } from "./deploy-commands";
@@ -9,9 +10,6 @@ const client = new Client({
   intents: ["Guilds", "GuildMessages", "DirectMessages", "MessageContent"],
 });
 
-// Birthday check interval (24 hours in milliseconds)
-const BIRTHDAY_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
-
 client.once("ready", async () => {
   console.log("Discord bot is ready! 🤖");
   
@@ -20,12 +18,15 @@ client.once("ready", async () => {
   // Run initial birthday check
   await checkAndSendBirthdayNotifications(client);
   
-  // Set up daily birthday check
-  setInterval(async () => {
+  // Schedule daily birthday check at 8 AM Slovenia time (Europe/Ljubljana timezone)
+  cron.schedule('0 8 * * *', async () => {
+    console.log('Running scheduled birthday check at 8 AM Slovenia time');
     await checkAndSendBirthdayNotifications(client);
-  }, BIRTHDAY_CHECK_INTERVAL);
+  }, {
+    timezone: "Europe/Ljubljana"
+  });
   
-  console.log("Birthday notification cron job started - checking daily");
+  console.log("Birthday notification cron job started - checking daily at 8 AM Slovenia time");
 });
 
 client.on("guildCreate", async (guild) => {
