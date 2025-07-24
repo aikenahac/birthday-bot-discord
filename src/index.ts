@@ -26,7 +26,7 @@ client.once("ready", async () => {
     timezone: "Europe/Ljubljana"
   });
   
-  console.log("Birthday notification cron job started - checking daily at 8 AM Slovenia time");
+  console.log("Birthday notification cron job started - checking daily at 00:01 AM Slovenia time");
 });
 
 client.on("guildCreate", async (guild) => {
