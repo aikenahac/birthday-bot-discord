@@ -56,6 +56,23 @@ export function getUserBirthdays(days: number, serverId?: string): Array<UserBir
       return diffDays >= 0 && diffDays <= days;
     });
 
+    // Sort birthdays by date in ascending order
+    validBirthdays.sort((a, b) => {
+      const datePartsA = a.birthday.split('-');
+      const datePartsB = b.birthday.split('-');
+      
+      const monthA = parseInt(datePartsA[1]!);
+      const dayA = parseInt(datePartsA[2]!);
+      const monthB = parseInt(datePartsB[1]!);
+      const dayB = parseInt(datePartsB[2]!);
+      
+      // Compare by month first, then by day
+      if (monthA !== monthB) {
+        return monthA - monthB;
+      }
+      return dayA - dayB;
+    });
+
     console.log(validBirthdays);
 
     return validBirthdays;

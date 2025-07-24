@@ -54,9 +54,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
     let birthdayList = '';
     for (const birthday of birthdays) {
+      const currentYear = (new Date()).getFullYear();
       const date = parseISO(birthday.birthday);
-      const formattedDate = format(date, 'MMMM d, yyyy');
-      birthdayList += `🎂 <@${birthday.user_id}> - ${formattedDate}\n`;
+      const formattedDate = format(date, 'MMMM d');
+      const newAge = currentYear - date.getFullYear();
+      birthdayList += `🎂 <@${birthday.user_id}> - ${formattedDate} (${newAge})\n`;
     }
 
     embed.addFields({
