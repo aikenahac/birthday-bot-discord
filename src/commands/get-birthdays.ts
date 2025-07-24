@@ -4,6 +4,7 @@ import {
   EmbedBuilder,
 } from 'discord.js';
 import { getUserBirthdays } from '../database/get-user-birthdays';
+import { format, parseISO } from 'date-fns';
 
 export const data = new SlashCommandBuilder()
   .setName('get-birthdays')
@@ -53,14 +54,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
     let birthdayList = '';
     for (const birthday of birthdays) {
-      const formattedDate = new Date(birthday.birthday).toLocaleDateString(
-        'en-US',
-        {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        },
-      );
+      const date = parseISO(birthday.birthday);
+      const formattedDate = format(date, 'MMMM d, yyyy');
       birthdayList += `🎂 <@${birthday.user_id}> - ${formattedDate}\n`;
     }
 
