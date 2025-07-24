@@ -17,6 +17,8 @@ export function getUserBirthdays(days: number, serverId?: string): Array<UserBir
   try {
     const today = new Date();
     const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+    const currentDay = today.getDate();
     
     console.log(`Fetching birthdays for the next ${days} days${serverId ? ` for server ${serverId}` : ''}`);
     
@@ -41,16 +43,17 @@ export function getUserBirthdays(days: number, serverId?: string): Array<UserBir
       
       if (isNaN(month) || isNaN(day)) return false;
       
-      // Create birthday date for current year
-      let birthdayThisYear = new Date(currentYear, month - 1, day);
+      // Create birthday date for current year using UTC to avoid timezone issues
+      let birthdayThisYear = new Date(Date.UTC(currentYear, month - 1, day));
       
       // If birthday already passed this year, check next year's birthday
-      if (birthdayThisYear < today) {
-        birthdayThisYear = new Date(currentYear + 1, month - 1, day);
+      const todayUTC = new Date(Date.UTC(currentYear, currentMonth - 1, currentDay));
+      if (birthdayThisYear < todayUTC) {
+        birthdayThisYear = new Date(Date.UTC(currentYear + 1, month - 1, day));
       }
       
       // Check if birthday falls within the specified number of days
-      const diffTime = birthdayThisYear.getTime() - today.getTime();
+      const diffTime = birthdayThisYear.getTime() - todayUTC.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
       return diffDays >= 0 && diffDays <= days;
