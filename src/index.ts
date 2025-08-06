@@ -7,7 +7,7 @@ import { initializeDatabase } from "./database/init";
 import { checkAndSendBirthdayNotifications } from "./services/birthday-notifications";
 
 const client = new Client({
-  intents: ["Guilds", "GuildMessages", "DirectMessages", "MessageContent"],
+  intents: ["Guilds", "GuildMessages", "DirectMessages", "MessageContent", "GuildMembers"],
 });
 
 client.once("ready", async () => {

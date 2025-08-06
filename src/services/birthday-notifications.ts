@@ -19,7 +19,7 @@ export async function checkAndSendBirthdayNotifications(client: Client) {
 
     for (const { server_id, channel_id } of serverChannels) {
       try {
-        const guild = client.guilds.cache.get(server_id);
+        const guild = client.guilds.resolve(server_id);
         if (!guild) {
           console.log(`Guild ${server_id} not found or bot not in guild`);
           continue;
@@ -40,8 +40,9 @@ export async function checkAndSendBirthdayNotifications(client: Client) {
         }
 
         // Filter birthdays for users who are actually in this guild
+        const members = await guild.members.fetch({ force: true });
         const guildBirthdays = todaysBirthdays.filter(birthday => {
-          return guild.members.cache.has(birthday.user_id);
+          return members.has(birthday.user_id);
         });
 
         if (guildBirthdays.length === 0) {
@@ -53,7 +54,6 @@ export async function checkAndSendBirthdayNotifications(client: Client) {
         const embed = new EmbedBuilder()
           .setTitle('🎉 Birthday Celebration! 🎂')
           .setColor(0xff69b4)
-          .setDescription('Today is a special day!')
           .setTimestamp();
 
         let birthdayList = '';
