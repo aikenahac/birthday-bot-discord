@@ -4,6 +4,7 @@ interface UserBirthdayRow {
   user_id: string;
   server_id: string;
   birthday: string;
+  isNextYear?: boolean;
 }
 
 /**
@@ -16,6 +17,7 @@ interface UserBirthdayRow {
 export function getUserBirthdays(days: number, serverId?: string): Array<UserBirthdayRow> {
   try {
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to midnight for date-only comparison
     const currentYear = today.getFullYear();
     
     console.log(`Fetching birthdays for the next ${days} days${serverId ? ` for server ${serverId}` : ''}`);
@@ -43,21 +45,32 @@ export function getUserBirthdays(days: number, serverId?: string): Array<UserBir
       
       // Create birthday date for current year
       let birthdayThisYear = new Date(currentYear, month - 1, day);
+      let isNextYear = false;
       
-      // If birthday already passed this year, check next year's birthday
+      // If birthday already passed this year (but not today), check next year's birthday
       if (birthdayThisYear < today) {
         birthdayThisYear = new Date(currentYear + 1, month - 1, day);
+        isNextYear = true;
       }
       
       // Check if birthday falls within the specified number of days
       const diffTime = birthdayThisYear.getTime() - today.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
-      return diffDays >= 0 && diffDays <= days;
+      if (diffDays >= 0 && diffDays <= days) {
+        row.isNextYear = isNextYear;
+        return true;
+      }
+      return false;
     });
 
-    // Sort birthdays by date in ascending order
+    // Sort birthdays by year first (this year before next year), then by date in ascending order
     validBirthdays.sort((a, b) => {
+      // Sort by year first (this year before next year)
+      if (a.isNextYear !== b.isNextYear) {
+        return (a.isNextYear ? 1 : 0) - (b.isNextYear ? 1 : 0);
+      }
+      
       const datePartsA = a.birthday.split('-');
       const datePartsB = b.birthday.split('-');
       

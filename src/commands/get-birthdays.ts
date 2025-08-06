@@ -52,22 +52,49 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       )
       .setTimestamp();
 
-    let birthdayList = '';
-    for (const birthday of birthdays) {
-      const currentYear = (new Date()).getFullYear();
-      const date = parseISO(birthday.birthday);
-      const formattedDate = format(date, 'MMMM d');
-      const newAge = currentYear - date.getFullYear();
-      birthdayList += `🎂 <@${birthday.user_id}> - ${formattedDate} (${newAge})\n`;
+    // Separate birthdays by year
+    const thisYearBirthdays = birthdays.filter(b => !b.isNextYear);
+    const nextYearBirthdays = birthdays.filter(b => b.isNextYear);
+
+    // Create birthday list for this year
+    if (thisYearBirthdays.length > 0) {
+      let thisYearList = '';
+      for (const birthday of thisYearBirthdays) {
+        const currentYear = (new Date()).getFullYear();
+        const date = parseISO(birthday.birthday);
+        const formattedDate = format(date, 'MMMM d');
+        const newAge = currentYear - date.getFullYear();
+        thisYearList += `🎂 <@${birthday.user_id}> - ${formattedDate} (${newAge})\n`;
+      }
+
+      embed.addFields({
+        name: `This Year (${thisYearBirthdays.length} birthday${
+          thisYearBirthdays.length === 1 ? '' : 's'
+        })`,
+        value: thisYearList,
+        inline: false,
+      });
     }
 
-    embed.addFields({
-      name: `Found ${birthdays.length} birthday${
-        birthdays.length === 1 ? '' : 's'
-      }`,
-      value: birthdayList || 'No birthdays in this range.',
-      inline: false,
-    });
+    // Create birthday list for next year
+    if (nextYearBirthdays.length > 0) {
+      let nextYearList = '';
+      for (const birthday of nextYearBirthdays) {
+        const currentYear = (new Date()).getFullYear();
+        const date = parseISO(birthday.birthday);
+        const formattedDate = format(date, 'MMMM d');
+        const newAge = (currentYear + 1) - date.getFullYear();
+        nextYearList += `🎂 <@${birthday.user_id}> - ${formattedDate} (${newAge})\n`;
+      }
+
+      embed.addFields({
+        name: `Next Year (${nextYearBirthdays.length} birthday${
+          nextYearBirthdays.length === 1 ? '' : 's'
+        })`,
+        value: nextYearList,
+        inline: false,
+      });
+    }
 
     return interaction.reply({
       embeds: [embed],

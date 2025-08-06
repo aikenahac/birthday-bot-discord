@@ -13,7 +13,7 @@ export const data = new SlashCommandBuilder()
   .addStringOption(option =>
     option
       .setName("date")
-      .setDescription("Birthday date in DD.MM.YYYY format (e.g., 18.12.2004)")
+      .setDescription("Birthday date in DD.MM.YYYY or D.M.YYYY format (e.g., 18.12.2004 or 1.1.2004)")
       .setRequired(true)
   );
 
@@ -37,13 +37,13 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
   }
 
-  // Validate date format (DD.MM.YYYY)
-  const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+  // Validate date format (DD.MM.YYYY or D.M.YYYY)
+  const dateRegex = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/;
   const match = dateInput.match(dateRegex);
 
   if (!match) {
     return interaction.reply({
-      content: "Invalid date format! Please use DD.MM.YYYY format (e.g., 18.12.2003)",
+      content: "Invalid date format! Please use DD.MM.YYYY or D.M.YYYY format (e.g., 18.12.2003 or 1.1.2003)",
       flags: [
         "Ephemeral"
       ]
