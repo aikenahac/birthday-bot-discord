@@ -18,9 +18,9 @@ client.once("ready", async () => {
   // Run initial birthday check
   await checkAndSendBirthdayNotifications(client);
   
-  // Schedule daily birthday check at 8 AM Slovenia time (Europe/Ljubljana timezone)
+  // Schedule daily birthday check at 00:01 AM Slovenia time (Europe/Ljubljana timezone)
   cron.schedule('1 0 * * *', async () => {
-    console.log('Running scheduled birthday check at 8 AM Slovenia time');
+    console.log('Running scheduled birthday check at 00:01 AM Slovenia time');
     await checkAndSendBirthdayNotifications(client);
   }, {
     timezone: "Europe/Ljubljana"
